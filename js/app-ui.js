@@ -226,10 +226,16 @@ function renderHistory() {
   const selected = dayData(state.selectedDay || targetDay());
   const currentEra = ERAS.find((era) => era.name === selected.era);
   const eraProgress = currentEra
-    ? Math.round(
-        ((selected.day - currentEra.start + 1) /
-          (currentEra.end - currentEra.start + 1)) *
+    ? Math.max(
+        0,
+        Math.min(
           100,
+          Math.round(
+            ((selected.day - currentEra.start + 1) /
+              (currentEra.end - currentEra.start + 1)) *
+              100,
+          ),
+        ),
       )
     : 0;
 
@@ -242,7 +248,7 @@ function renderHistory() {
     </div>
     <div class="card spaced-card">
       <h2>聖書史タイムライン</h2>
-      <p class="small">現在選択中：Day ${selected.day}「${esc(selected.reading)}」／この時代区分の進行 ${eraProgress}%</p>
+      <p class="small">現在選択中：Day ${selected.day}「${esc(formatReadingLabel(selected.reading))}」／この時代区分の進行 ${eraProgress}%</p>
       <div class="timeline">
         ${ERAS.map(
           (era) => `<div class="era ${era.name === selected.era ? "active" : ""}">
