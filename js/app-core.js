@@ -1,18 +1,21 @@
 const PLAN = window.PLAN;
 const BIBLE_BOOKS = window.BIBLE_BOOKS;
 
-const ERAS = [
-  ...new Map(
-    PLAN.map((item) => [
-      item.era,
-      { name: item.era, theme: item.theme, start: item.day, end: item.day },
-    ]),
-  ).values(),
-];
+const ERA_MAP = new Map();
 PLAN.forEach((item) => {
-  const era = ERAS.find((candidate) => candidate.name === item.era);
-  if (era) era.end = item.day;
+  const era = ERA_MAP.get(item.era);
+  if (era) {
+    era.end = item.day;
+    return;
+  }
+  ERA_MAP.set(item.era, {
+    name: item.era,
+    theme: item.theme,
+    start: item.day,
+    end: item.day,
+  });
 });
+const ERAS = [...ERA_MAP.values()];
 
 const STATE_VERSION = 4;
 const BACKUP_FORMAT_VERSION = 2;

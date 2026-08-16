@@ -60,7 +60,11 @@ const context = {
     createElement() { return element(); },
   },
   window: {
-    PLAN: Array.from({ length: 365 }, (_, i) => ({ day: i + 1, era: 'era', theme: 'theme', reading: '創1' })),
+    PLAN: Array.from({ length: 365 }, (_, i) => {
+      const day = i + 1;
+      const era = day <= 17 ? 'era-a' : day <= 42 ? 'era-b' : 'era-c';
+      return { day, era, theme: 'theme', reading: '創1' };
+    }),
     BIBLE_BOOKS: { '創': { code: 'gen', titleNi: '創世記' } },
     scrollTo() {},
   },
@@ -83,6 +87,11 @@ assert.strictEqual(JSON.stringify(getCompletion(1)), JSON.stringify({ status: 'c
 assert.strictEqual(isCompleted(2), false);
 assert.strictEqual(state.notes[1], 'memo');
 assert.strictEqual(state.notes[0], undefined);
+assert.strictEqual(JSON.stringify(ERAS), JSON.stringify([
+  { name: 'era-a', theme: 'theme', start: 1, end: 17 },
+  { name: 'era-b', theme: 'theme', start: 18, end: 42 },
+  { name: 'era-c', theme: 'theme', start: 43, end: 365 },
+]));
 
 const fixed = new Date('2026-08-02T09:15:30.000Z');
 markCompleted(2, fixed);
