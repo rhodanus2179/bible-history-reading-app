@@ -1,3 +1,16 @@
+function formatReadingLabel(label) {
+  return String(label)
+    .split("、")
+    .map((raw) => {
+      const token = raw.trim();
+      const bookKey = BIBLE_BOOK_KEYS.find((key) => token.startsWith(key));
+      if (!bookKey) return token;
+      const meta = BIBLE_BOOKS[bookKey];
+      return `${meta?.titleNi || bookKey}${token.slice(bookKey.length)}`;
+    })
+    .join("、");
+}
+
 function renderToday() {
   const todayRoot = document.getElementById("today");
   const selected = dayData(state.selectedDay || targetDay());
@@ -47,7 +60,7 @@ function renderToday() {
             ${targetControl}
           </div>
           <h2 class="reading-heading">${isTarget ? `${targetText} Day ${selected.day}` : `Day ${selected.day}の通読`}</h2>
-          <div class="reading-title">${esc(selected.reading)}</div>
+          <div class="reading-title">${esc(formatReadingLabel(selected.reading))}</div>
           <p class="small">歴史順通読計画の第${selected.day}日です。節範囲が指定された日も、読み進めやすいよう該当章全体を開きます。</p>
           <div class="reading-links">${renderBibleLinks(selected.reading)}</div>
           <div class="actions">
